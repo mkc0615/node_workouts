@@ -10,8 +10,10 @@ app.use(bodyParser.json())
 
 const {User} = require('./models/User')
 
+const config = require('./config/key')
+
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://minkee:cjsrnr0925@workout.rma94.mongodb.net/myFirstDatabase?retryWrites=true&w=majority').then(() => console.log("MongoDB connected!"))
+mongoose.connect(config.mongoURI).then(() => console.log("MongoDB connected!"))
 .catch(err => console.log(err))
 
 app.get('/', (req, res)=>res.send('Hello World! Good Luck!'))
@@ -27,7 +29,6 @@ app.post('/register', (req, res) => {
         })
     })
 })
-
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
