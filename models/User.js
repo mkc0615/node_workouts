@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
-//const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
+
+// Using the built in crypto module
+const {scryptSync, randomBytes} = require('crypto');
+// Random String here (ideally at least 16bytes)
 
 const userSchema = mongoose.Schema({
     name: {
@@ -35,23 +38,21 @@ const userSchema = mongoose.Schema({
 })
  
 // encryption
-// userSchema.pre('save', function( next ){
-//     var user = this;
-//     if(user.isModified('password')){
-        // bcrypt.getSalt(saltRounds, function(err, salt){
-        //     if(err) return next(err)
-            
-        //     bcrypt.hash(user.password, salt, function(err, hash){
-        //         if(err) return next(err)
-        //         user.password = hash
-        //         next()
-        //     })
-        // })
-//         console.log('encryption here');
-//     } else {
-//         next()
-//     }
-// })
+userSchema.pre('save', function( next ){
+     var user = this;
+     if(user.isModified('password')){
+        const salt = randomBytes(16).toString("hex");
+        console.log("this pw ::: "+user.password);
+        
+        const getHash =  scryptSync(user.password, salt, 32).toString("hex");
+        user.password = getHash;
+        console.log("this pw ::: "+user.password);
+        next();
+    
+    } else {
+        next();
+    }
+})
 
 userSchema.methods.comparePassword = function(plainPassword, cb){
     // bcrypt.compare(plainPassword, this.password, function(err, isMatch){
