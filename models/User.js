@@ -42,13 +42,9 @@ userSchema.pre('save', function( next ){
      var user = this;
      if(user.isModified('password')){
         const salt = randomBytes(16).toString("hex");
-        console.log("this pw ::: "+user.password);
-        
         const getHash =  scryptSync(user.password, salt, 32).toString("hex");
         user.password = getHash;
-        console.log("this pw ::: "+user.password);
         next();
-    
     } else {
         next();
     }
@@ -75,6 +71,20 @@ userSchema.methods.generateToken = function(cb){
     })
 }
 
+userSchema.statics.findByToken = function (token, cb){
+    var user = this;
+
+    // decode token
+    jwt.verify(token, 'secretToken', function(err, decoded){
+        // find user with duser id
+        // check if client token and db token is equal
+        user.findOne({"_id": decoded, "token": token}, function(err, user){
+            if(err) return cb(err);
+            cb(null, user)
+        
+        })
+    })
+}
 const User = mongoose.model('User', userSchema)
 
 module.exports = {User}

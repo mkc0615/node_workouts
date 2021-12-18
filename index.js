@@ -11,6 +11,8 @@ app.use(express.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 
+const { auth } = require('./middleware/auth');
+
 // User model
 const {User} = require('./models/User')
 
@@ -26,7 +28,7 @@ mongoose.connect(config.mongoURI).then(() => console.log("MongoDB connected!"))
 app.get('/', (req, res)=>res.send('Hello World! Good Luck!'))
 
 // Register Process
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
     
     // Registration info
     const user = new User(req.body)
@@ -39,7 +41,7 @@ app.post('/register', (req, res) => {
 })
 
 // Login Process
-app.post('/login', (req, res)=>{
+app.post('/api/users/login', (req, res)=>{
     
     // check requested email from db
     User.findOne( {email: req.body.email}, (err, user)=>{
@@ -65,5 +67,23 @@ app.post('/login', (req, res)=>{
         })    
     })
 })
+
+// auth는 middleware
+app.get('/api/users/auth', auth, (req, res) => {
+
+    // if something reached here, it passed authenication of
+    // auth middleware
+    res.status(200).json({
+        _id: req.user._id,
+        isAdmin: req.user.role === 0 ? false : true,
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.lastname,
+        image: req.user.image
+    })
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
