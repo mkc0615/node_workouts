@@ -85,7 +85,7 @@ app.get('/api/users/auth', auth, (req, res) => {
     })
 })
 
-app.get('/api/users/logout', auth, (res, req)=>{
+app.get('/api/users/logout', auth, (req, res) => {
     User.findOneAndUpdate({_id: req.user._id},
         {token: ""}
         , (err, user) => {
