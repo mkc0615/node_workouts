@@ -6,12 +6,14 @@
   "scripts": {
     "start": "node server/index.js",
     "runner": "nodemon server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run start\" \"npm run start --prefix client\""
   },
   "author": "mkc0615",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.1",
+    "concurrently": "^6.5.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
