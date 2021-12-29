@@ -7,8 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux'
 
 //css framework (ant-design)
-import 'antd/dist/antd.css';
-import { applyMiddleware } from 'redux';
+import 'antd/dist/antd.min.css';
 
 import { applyMiddleware, createStore } from 'redux';
 import promiseMiddleware from 'redux-promise';
